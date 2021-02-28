@@ -5,7 +5,7 @@
     "target": "es2019",
     "types": ["node"],
  
-    "strict": false,
+    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true

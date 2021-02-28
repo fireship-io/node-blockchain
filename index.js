@@ -20,6 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto = __importStar(require("crypto"));
+// Transfer of funds between two wallets
 class Transaction {
     constructor(amount, payer, // public key
     payee // public key
@@ -32,6 +33,7 @@ class Transaction {
         return JSON.stringify(this);
     }
 }
+// Individual block on the chain
 class Block {
     constructor(prevHash, transaction, ts = Date.now()) {
         this.prevHash = prevHash;
@@ -46,13 +48,19 @@ class Block {
         return hash.digest('hex');
     }
 }
+// The blockchain
 class Chain {
     constructor() {
-        this.chain = [new Block(null, new Transaction(100, 'genesis', 'satoshi'))];
+        this.chain = [
+            // Genesis block
+            new Block('', new Transaction(100, 'genesis', 'satoshi'))
+        ];
     }
+    // Most recent block
     get lastBlock() {
         return this.chain[this.chain.length - 1];
     }
+    // Proof of work system
     mine(nonce) {
         let solution = 1;
         console.log('⛏️  mining...');
@@ -67,6 +75,7 @@ class Chain {
             solution += 1;
         }
     }
+    // Add a new block to the chain if valid signature & proof of work is complete
     addBlock(transaction, senderPublicKey, signature) {
         const verify = crypto.createVerify('SHA256');
         verify.update(transaction.toString());
@@ -78,7 +87,9 @@ class Chain {
         }
     }
 }
+// Singleton instance
 Chain.instance = new Chain();
+// Wallet gives a user a public/private keypair
 class Wallet {
     constructor() {
         const keypair = crypto.generateKeyPairSync('rsa', {

@@ -1,5 +1,6 @@
 import * as crypto from 'crypto';
 
+// Transfer of funds between two wallets
 class Transaction {
   constructor(
     public amount: number, 
@@ -12,6 +13,7 @@ class Transaction {
   }
 }
 
+// Individual block on the chain
 class Block {
 
   public nonce = Math.round(Math.random() * 999999999);
@@ -31,19 +33,26 @@ class Block {
 }
 
 
+// The blockchain
 class Chain {
+  // Singleton instance
   public static instance = new Chain();
 
   chain: Block[];
 
   constructor() {
-    this.chain = [new Block(null, new Transaction(100, 'genesis', 'satoshi'))];
+    this.chain = [
+      // Genesis block
+      new Block('', new Transaction(100, 'genesis', 'satoshi'))
+    ];
   }
 
+  // Most recent block
   get lastBlock() {
     return this.chain[this.chain.length - 1];
   }
 
+  // Proof of work system
   mine(nonce: number) {
     let solution = 1;
     console.log('⛏️  mining...')
@@ -64,6 +73,7 @@ class Chain {
     }
   }
 
+  // Add a new block to the chain if valid signature & proof of work is complete
   addBlock(transaction: Transaction, senderPublicKey: string, signature: Buffer) {
     const verify = crypto.createVerify('SHA256');
     verify.update(transaction.toString());
@@ -79,8 +89,7 @@ class Chain {
 
 }
 
-
-
+// Wallet gives a user a public/private keypair
 class Wallet {
   public publicKey: string;
   public privateKey: string;
@@ -106,20 +115,6 @@ class Wallet {
     Chain.instance.addBlock(transaction, this.publicKey, signature);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // Example usage
 

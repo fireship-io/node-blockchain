@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "start": "tsc && node ."
   },
   "keywords": [],
   "author": "",
