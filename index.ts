@@ -74,11 +74,11 @@ class Chain {
   }
 
   // Add a new block to the chain if valid signature & proof of work is complete
-  addBlock(transaction: Transaction, senderPublicKey: string, signature: Buffer) {
+  addBlock(transaction: Transaction, signature: Buffer) {
     const verify = crypto.createVerify('SHA256');
     verify.update(transaction.toString());
 
-    const isValid = verify.verify(senderPublicKey, signature);
+    const isValid = verify.verify(transaction.payer, signature);
 
     if (isValid) {
       const newBlock = new Block(this.lastBlock.hash, transaction);
@@ -112,7 +112,7 @@ class Wallet {
     sign.update(transaction.toString()).end();
 
     const signature = sign.sign(this.privateKey); 
-    Chain.instance.addBlock(transaction, this.publicKey, signature);
+    Chain.instance.addBlock(transaction, signature);
   }
 }
 
